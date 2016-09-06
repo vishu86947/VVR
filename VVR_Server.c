@@ -52,7 +52,9 @@
          //while (1)
          //{
          n = recvfrom(sockfd,packet,500,0,(struct sockaddr *)&from,&fromlen);
-         
+         FILE *fp1 = NULL;
+         fp1 = fopen("new.txt","w");
+         fwrite(packet->payload,500,1,fp1);
          if (n < 0) error("recvfrom");
          printf("%d\n",n);
       
@@ -62,6 +64,7 @@
         //}*/
              close(sockfd);
              free(packet);
+             fclose(fp1);
          return 0; 
      }
 
