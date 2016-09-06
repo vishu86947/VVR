@@ -6,11 +6,24 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+#include "VVRFileTransfer.h"
+
 
 void error(const char *msg)
 {
     perror(msg);
     exit(0);
+}
+void packForm(struct vvr_packet *packet, size_t bytes_read, uint8_t flag){
+    
+    
+     bytes_read= fread(packet->payload, 500, 1, fp);  
+    printf("bytes read %s",bytes_read);
+     packet->seq_no =  seqNo;
+     packet->ack_no = last_pkt_ack;
+     packet->flag = flag;
+     packet->length = 500;
+ 
 }
 
 int main(int argc, char *argv[])
@@ -45,13 +58,26 @@ int main(int argc, char *argv[])
     bzero(buffer,256);
     fgets(buffer,255,stdin);
     fromlen = sizeof(struct sockaddr_in);
-    n = sendto(sockfd,buffer,strlen(buffer),0,(struct sockaddr *) &serv_addr,fromlen);
+    //Opening the file to split it
+     fp= fopen("test.txt", "r+");
+     fseek(fp,0, SEEK_END);
+     long int size = ftell(fp);
+     fseek(fp, 0, SEEK_SET);
+     size_t bytes_read;
+     
+     seqNo += 1;
+     
+    //call forming packet function
+      vvr_packet *packet = (vvr_packet *)malloc (sizeof(vvr_packet) + 500);
+      uint8_t vvr_flag =0;
+      packForm (packet, bytes_read , vvr_flag);
+     uint32_t sizeofpacket = sizeof(vvr_packet) + 500;
+     
+
+    n = sendto(sockfd,packet,sizeofpacket,0,(struct sockaddr *) &serv_addr,fromlen);
      if (n < 0)
      error("sendto");
     bzero(buffer,256);
-    n = recvfrom(sockfd,buffer,256,0,(struct sockaddr *)&from,&fromlen2);
-     if (n < 0) error("recvfrom");
-    printf("%s\n",buffer);
     close(sockfd);
     return 0;
 }

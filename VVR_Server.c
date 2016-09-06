@@ -44,42 +44,21 @@ int main(int argc, char *argv[])
      bzero(buffer,256);
      fromlen = sizeof(struct sockaddr_in);
      
-     //Opening the file to split it
-     fp= fopen("test.txt", "r+");
-     fseek(fp,0, SEEK_END);
-     long int size = ftell(fp);
-     fseek(fp, 0, SEEK_SET);
-     size_t bytes_read;
+    vvr_packet *packet ;
+     //while (1)
+     //{
+     n = recvfrom(sockfd,packet,500,0,(struct sockaddr *)&from,&fromlen);
      
-     seqNo += 1;
-     
-     //call forming packet function
-      vvr_packet *packet = (vvr_packet *)malloc (sizeof(vvr_packet) + 500);
-      uint8_t vvr_flag =0;
-      packForm (&packet, bytes_read , vvr_flag);
-     
-     /*while (1)
-     {
-     n = recvfrom(sockfd,buffer,256,0,(struct sockaddr *)&from,&fromlen);
      if (n < 0) error("recvfrom");
-     printf("%s\n",buffer);
+     printf("%s\n",n);
   
-     n = sendto(sockfd,"Got yourmessage",17,0,(struct sockaddr *) &from,fromlen);
-     if (n < 0)
-     error("sendto");
-     }*/
+     //n = sendto(sockfd,"Got yourmessage",17,0,(struct sockaddr *) &from,fromlen);
+     //if (n < 0)
+     //error("sendto");
+    //}*/
+         close(sockfd);
+
      return 0; 
  }
 
- int packForm(struct vvr_packet *packet, size_t bytes_read, uint8_t flag){
-    
-    
-     bytes_read= fread(packet->payload, 500, 1, fp);  
-     packet->seq_no =  seqNo;
-     packet->ack_no = last_pkt_ack;
-     packet->flag = flag;
-     packet->length = 500;
  
-     
-     return 0;
-}
