@@ -18,7 +18,7 @@ void packForm(struct vvr_packet *packet, size_t bytes_read, uint8_t flag){
     
     
      bytes_read= fread(packet->payload, 500, 1, fp);  
-    printf("bytes read %s",bytes_read);
+    printf("bytes read %d",bytes_read);
      packet->seq_no =  seqNo;
      packet->ack_no = last_pkt_ack;
      packet->flag = flag;
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
     bzero(buffer,256);
     fgets(buffer,255,stdin);
     fromlen = sizeof(struct sockaddr_in);
+    printf("checkpint 1");
     //Opening the file to split it
      fp= fopen("test.txt", "r+");
      fseek(fp,0, SEEK_END);
@@ -69,6 +70,10 @@ int main(int argc, char *argv[])
      
     //call forming packet function
       vvr_packet *packet = (vvr_packet *)malloc (sizeof(vvr_packet) + 500);
+      if (packet ==NULL)
+        printf("could not malloc");
+       else
+        printf("malloc success");
       uint8_t vvr_flag =0;
       packForm (packet, bytes_read , vvr_flag);
      uint32_t sizeofpacket = sizeof(vvr_packet) + 500;
@@ -79,5 +84,7 @@ int main(int argc, char *argv[])
      error("sendto");
     bzero(buffer,256);
     close(sockfd);
+    free(packet);
+    fclose(fp);
     return 0;
 }
