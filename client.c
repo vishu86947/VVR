@@ -64,7 +64,7 @@ void send_file(){
     Create UDP socket on 3002
     check NACK number in nackArr and send to ohter side 
 */
-void nack_thr(){
+/*void nack_thr(){
     
     int sockfd, portno, n;
     struct sockaddr_in serv_addr;
@@ -105,7 +105,7 @@ void nack_thr(){
         return 0;    
     }
 }
-
+*/
 
 
 
